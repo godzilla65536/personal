@@ -8,20 +8,31 @@ def delete_files(fileList):
 	for file in fileList:
 		os.remove(file)
 
-script_path = os.path.split(__file__)[0]
-os.chdir(script_path)
+workDir = input('Specify the path with duplicate files: ')
 
-filelist = os.listdir(script_path)
-filelist.remove(os.path.split(__file__)[1])
-
+fileList = [os.path.join(workDir, fileName) for fileName in os.listdir(workDir) if os.path.isfile(os.path.join(workDir, fileName))]
 
 duplicate_files = []
 hashList = []
-for file in filelist:
+for file in fileList:
 	Hash = sha256(file)
 	if Hash in hashList:
 		duplicate_files.append(file)
 	else:
 		hashList.append(Hash)
 
-delete_files(duplicate_files)
+print('Duplicate files found: ' + str(len(duplicate_files)))
+
+if len(duplicate_files) != 0:
+
+    print('Duplicate files:')
+    for fileName in duplicate_files:
+        print('\t' + fileName)
+
+    confirm = input('Delete these duplicate files? [y/n]: ')
+
+    if confirm == 'y':
+        delete_files(duplicate_files)
+        print('Deletion finished')
+    else:
+        print('Deletion not confirmed')
